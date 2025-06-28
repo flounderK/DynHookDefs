@@ -54,16 +54,17 @@ endif()
 
 # Add ASan, coverage, etc.
 if(CMAKE_BUILD_TYPE STREQUAL "ASAN")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
 endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COVERAGE_C_FLAGS} --coverage")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g ${COVERAGE_C_FLAGS} --coverage")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 endif()
 
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
     set(VERBOSE_LOG ON)
     add_compile_definitions(DEBUG)
+    add_compile_options(-g)
 endif()
 
 if(VERBOSE_LOG)
