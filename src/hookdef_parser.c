@@ -4,15 +4,16 @@
 #include <errno.h>
 #include <string.h>
 #include <strings.h>
+#include <stdint.h>
 #include "hookdef_parser.h"
 #include "intrusive_list.h"
 #include "debug_utils.h"
 
 
-struct HookDef {
+struct SymData {
     struct list_head node;
-
-
+    char* name;
+    uint64_t addr;
 };
 
 enum HookDefType {
@@ -25,57 +26,93 @@ enum HookDefType {
     HOOKDEF_DUMPADDR,
 };
 
+struct HookDef {
+    struct list_head node;
+    enum HookDefType type;
+};
+
 struct HookdefParseReq {
     char* token;
+    struct HookDef* (*parse_func)(int argc, char** argv);
     int nargs;
 };
 
+
+
+static struct list_head hook_def_head = LIST_HEAD_INIT(hook_def_head);
+
+static struct list_head sym_list = LIST_HEAD_INIT(sym_list);
+
+
+static void add_sym(char* name, uint64_t addr) {
+    struct SymData* dat = (struct SymData*)malloc(sizeof(struct SymData));
+    if (dat == NULL) {
+        printf("failed to alloc SymDat\n");
+        abort();
+    }
+    memset(dat, 0, sizeof(struct SymData));
+    list_add_tail(&dat->node, &sym_list);
+    return;
+}
+
+struct HookDef* parse_hookdef_sym(int argc, char** argv) {
+    uint64_t addr = strtoull(argv[1], NULL, 16);
+    add_sym(argv[0], addr);
+    printf("parse sym \"%s\" 0x%0zx\n", argv[0], addr);
+    return NULL;
+}
+
+struct HookDef* parse_hookdef_args(int argc, char** argv) {
+    struct HookDef* res = NULL;
+    printf("parse args\n");
+    return res;
+}
+
 static struct HookdefParseReq parsereqs[] = {
     [HOOKDEF_NONE] =     { .token = "", .nargs = -1},
-    [HOOKDEF_ARGS] =     { .token = "args", .nargs = 2},     // <addr|sym>,<num-regs>
-    [HOOKDEF_REGS] =     { .token = "regs", .nargs = 2},     // <addr|sym>,<reglist>
-    [HOOKDEF_REGADDR] =  { .token = "regaddr", .nargs = 3},  // <addr|sym>,<reg>,<size>
-    [HOOKDEF_SYM] =      { .token = "sym", .nargs = 2},      // <name>,<addrlist>
-    [HOOKDEF_ALLREGS] =  { .token = "allregs", .nargs = 1},  // <addr|sym>
-    [HOOKDEF_DUMPADDR] = { .token = "dumpaddr", .nargs = 3}, // <addr|sym>,<addr|sym>,<size>
+    [HOOKDEF_ARGS] =     { .token = "args", .nargs = 2,        // <addr|sym>,<num-regs>
+                           .parse_func = &parse_hookdef_args},
+    [HOOKDEF_REGS] =     { .token = "regs", .nargs = 2},       // <addr|sym>,<reglist>
+    [HOOKDEF_REGADDR] =  { .token = "regaddr", .nargs = 3},    // <addr|sym>,<reg>,<size>
+    [HOOKDEF_SYM] =      { .token = "sym", .nargs = 2,
+                           .parse_func = &parse_hookdef_sym},  // <name>,<addr>
+    [HOOKDEF_ALLREGS] =  { .token = "allregs", .nargs = 1},    // <addr|sym>
+    [HOOKDEF_DUMPADDR] = { .token = "dumpaddr", .nargs = 3},   // <addr|sym>,<addr|sym>,<size>
     {.token = NULL, .nargs = -1}
 };
 
 
 void parse_hookdef_cmd(int argc, char** argv){
-
     int currind = 0;
+    struct HookDef* hook_def;
     while (currind <= argc-1 && argv[currind] != NULL) {
-        enum HookDefType hook_type = HOOKDEF_NONE;
+        hook_def = NULL;
         struct HookdefParseReq* parsereq = NULL;
-        for (int i = 0; parsereqs[i].token != NULL; i++) {
+        for (size_t i = 0; i < sizeof(parsereqs)/sizeof(struct HookdefParseReq); i++) {
             // +1 to handle cases where the start of a command name is the same as the entire name of another command
-            int b = strncasecmp( parsereqs[i].token, argv[currind], strlen(parsereqs[i].token)+1);
-            //printf("%s b = %d\n", parsereqs[i].token, b);
-            if (0 == b) {
-                hook_type = (enum HookDefType)i;
+            if (0 == strncasecmp(parsereqs[i].token, argv[currind], strlen(parsereqs[i].token)+1)) {
                 parsereq = &parsereqs[i];
                 break;
             }
         }
 
         currind++;
-        if (hook_type == HOOKDEF_NONE) {
-            printf("invalid hook type %s\n", argv[currind]);
-            return;
+        if (parsereq == NULL) {
+            printf("invalid hook type %s\n", argv[currind-1]);
+            continue;
         }
 
-        switch (hook_type) {
-            case HOOKDEF_ARGS:
-                //parse_hookdef_args(argc - 1, &argv[currind]);
-                printf("args\n");
-                break;
-            default:
-                printf("Unhandled hook type\n");
-                return;
-                break;
+        if (parsereq->nargs + currind > argc) {
+            printf("not enough args to parse %s\n", argv[currind-1]);
+            continue;
         }
 
-
+        if (parsereq->parse_func != NULL) {
+            hook_def = parsereq->parse_func(parsereq->nargs, &argv[currind]);
+            if (hook_def != NULL) {
+                list_add_tail(&hook_def->node, &hook_def_head);
+            }
+        }
+        currind += parsereq->nargs;
     }
 }
