@@ -18,10 +18,10 @@ struct HookDefHandlerInterface {
     struct list_head node;
     struct HookdefParseReq parse_req;
     //void* data;
-    void* (*create_data)();
-    void (*print_data)(void* data);
-    void (*destroy_data)(void* data);
-    void (*enable_hook)(struct HookDef*);
+    //void* (*create)();
+    void (*print)(struct HookDef*);
+    void (*destroy)(struct HookDef*);
+    void (*enable)(struct HookDef*);
     void* handler_func;
     int cmd_type;
 };
@@ -92,6 +92,7 @@ void parse_hookdef_cmd(int argc, char* argv[]);
 
 extern struct list_head sym_list;
 extern struct list_head hook_def_head;
+extern struct list_head interface_list;
 struct SymData* add_sym(char* name, uint64_t addr);
 void print_syms();
 void print_hook_defs();
