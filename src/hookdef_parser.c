@@ -12,16 +12,11 @@
 #include "dyn_hook_defs.h"
 
 
-struct HookdefParseReq {
-    char* token;
-    struct HookDef* (*parse_func)(int argc, char** argv);
-    int nargs;
-};
-
 struct HookDef* parse_hookdef_sym(int argc, char** argv) {
     uint64_t addr = strtoull(argv[1], NULL, 16);
-    add_sym(argv[0], addr);
-    //printf("parse sym \"%s\" 0x%0zx\n", argv[0], addr);
+    struct SymData* sym = add_sym(argv[0], addr);
+    printf("parse sym \"%s\" 0x%0zx\n", argv[0], addr);
+    printf("sym: ptr %p name \"%s\" 0x%0zx\n", (void*)sym, sym->name, sym->addr);
     return NULL;
 }
 
@@ -31,6 +26,7 @@ struct HookDef* parse_hookdef_args(int argc, char** argv) {
     struct HookDefArgs* args = NULL;
     uint64_t addr;
     uint32_t nregs = strtoul(argv[1], NULL, 10);
+    printf("args argv[0] %s argv[1] %s\n", argv[0], argv[1]);
     if (0 == strncasecmp(argv[0], "0x", sizeof("0x")-1)) {
         addr = strtoull(argv[0], NULL, 16);
         args = new_HookDefArgs(addr, nregs);
@@ -50,7 +46,7 @@ struct HookDef* parse_hookdef_args(int argc, char** argv) {
     size_t sym_str_len = strlen(argv[0]);
     list_for_each(curr_node, &sym_list) {
         sym = list_entry(curr_node, struct SymData, node);
-        //printf("curr node %p sym %p sym name %s\n", curr_node, sym, sym->name);
+        printf("curr node %p sym %p sym name %s sym addr 0x%zx\n", curr_node, sym, sym->name, sym->addr);
         //fflush(stdout);
         if (0 != strncmp(sym->name, argv[0], sym_str_len+1)) {
             continue;

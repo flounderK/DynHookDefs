@@ -63,8 +63,9 @@ struct HookDefDumpAddr {
 
 extern struct list_head sym_list;
 extern struct list_head hook_def_head;
-void add_sym(char* name, uint64_t addr);
+struct SymData* add_sym(char* name, uint64_t addr);
 void print_syms();
+void print_hook_defs();
 struct HookDefArgs* new_HookDefArgs(uint64_t addr, uint32_t nregs);
 struct HookDef* new_HookDef(enum HookDefType hook_type);
 struct HookDefRegAddr* new_HookDefRegAddr(uint64_t addr,  uint64_t regno, uint64_t size);
