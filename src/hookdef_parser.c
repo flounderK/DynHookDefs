@@ -11,6 +11,7 @@
 #include "dyn_hook_defs.h"
 
 
+/*
 void parse_hookdef_sym(int argc, char** argv) {
     uint64_t addr = strtoull(argv[1], NULL, 16);
     add_sym(argv[0], addr);
@@ -181,3 +182,4 @@ void parse_hookdef_cmd(int argc, char** argv){
         currind += parsereq->nargs;
     }
 }
+*/
