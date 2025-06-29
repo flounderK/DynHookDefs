@@ -8,6 +8,7 @@
 
 struct list_head sym_list = LIST_HEAD_INIT(sym_list);
 struct list_head hook_def_head = LIST_HEAD_INIT(hook_def_head);
+struct list_head interface_list = LIST_HEAD_INIT(interface_list);
 
 struct SymData* add_sym(char* name, uint64_t addr) {
     struct SymData* dat = (struct SymData*)malloc(sizeof(struct SymData));
@@ -73,7 +74,7 @@ struct HookDefArgs* new_HookDefArgs(uint64_t addr, uint32_t nregs) {
         abort();
     }
     memset(res, 0, sizeof(struct HookDefArgs));
-    printf("args: addr 0x%0zx nregs %u\n", addr, nregs);
+    //printf("args: addr 0x%0zx nregs %u\n", addr, nregs);
     res->addr = addr;
     res->nregs = nregs;
     return res;
@@ -102,4 +103,22 @@ struct HookDef* new_HookDef(enum HookDefType hook_type){
     res->type = hook_type;
     return res;
 
+}
+
+int register_handler(struct HookDefHandlerInterface* new_handler_int){
+    int res = -1;
+    struct list_head* curr_node;
+    struct HookDefHandlerInterface* curr_hand = NULL;
+    list_for_each(curr_node, &interface_list) {
+        curr_hand = list_entry(curr_node, struct HookDefHandlerInterface, node);
+        if (new_handler_int->cmd_type == curr_hand->cmd_type) {
+            printf("handler for cmd %d already exists\n", new_handler_int->cmd_type);
+            goto exit;
+        }
+    }
+
+    list_add_tail(&new_handler_int->node, &interface_list);
+    res = 0;
+exit:
+    return res;
 }

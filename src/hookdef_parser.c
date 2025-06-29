@@ -6,27 +6,26 @@
 #include <strings.h>
 #include <stdint.h>
 #include <unistd.h>
-#include "hookdef_parser.h"
 #include "intrusive_list.h"
 #include "debug_utils.h"
 #include "dyn_hook_defs.h"
 
 
-struct HookDef* parse_hookdef_sym(int argc, char** argv) {
+void parse_hookdef_sym(int argc, char** argv) {
     uint64_t addr = strtoull(argv[1], NULL, 16);
-    struct SymData* sym = add_sym(argv[0], addr);
-    printf("parse sym \"%s\" 0x%0zx\n", argv[0], addr);
-    printf("sym: ptr %p name \"%s\" 0x%0zx\n", (void*)sym, sym->name, sym->addr);
-    return NULL;
+    add_sym(argv[0], addr);
+    //printf("parse sym \"%s\" 0x%0zx\n", argv[0], addr);
+    //printf("sym: ptr %p name \"%s\" 0x%0zx\n", (void*)sym, sym->name, sym->addr);
+    return;
 }
 
-struct HookDef* parse_hookdef_args(int argc, char** argv) {
-    struct HookDef* res = NULL;
+void parse_hookdef_args(int argc, char** argv) {
+    //struct HookDef* res = NULL;
     struct HookDef* hook_def = NULL;
     struct HookDefArgs* args = NULL;
     uint64_t addr;
     uint32_t nregs = strtoul(argv[1], NULL, 10);
-    printf("args argv[0] %s argv[1] %s\n", argv[0], argv[1]);
+    //printf("args argv[0] %s argv[1] %s\n", argv[0], argv[1]);
     if (0 == strncasecmp(argv[0], "0x", sizeof("0x")-1)) {
         addr = strtoull(argv[0], NULL, 16);
         args = new_HookDefArgs(addr, nregs);
@@ -39,14 +38,14 @@ struct HookDef* parse_hookdef_args(int argc, char** argv) {
         }
         hook_def->hook_data = (void*)args;
         list_add_tail(&hook_def->node, &hook_def_head);
-        return res;
+        return;
     }
     struct list_head* curr_node = NULL;
     struct SymData* sym = NULL;
     size_t sym_str_len = strlen(argv[0]);
     list_for_each(curr_node, &sym_list) {
         sym = list_entry(curr_node, struct SymData, node);
-        printf("curr node %p sym %p sym name %s sym addr 0x%zx\n", curr_node, sym, sym->name, sym->addr);
+        //printf("curr node %p sym %p sym name %s sym addr 0x%zx\n", curr_node, sym, sym->name, sym->addr);
         //fflush(stdout);
         if (0 != strncmp(sym->name, argv[0], sym_str_len+1)) {
             continue;
@@ -63,17 +62,15 @@ struct HookDef* parse_hookdef_args(int argc, char** argv) {
         list_add_tail(&hook_def->node, &hook_def_head);
     }
     //printf("parse args\n");
-    return res;
+    return;
 }
 
-struct HookDef* parse_hookdef_regs(int argc, char** argv) {
-    struct HookDef* res = NULL;
+void parse_hookdef_regs(int argc, char** argv) {
     printf("parse regs\n");
-    return res;
+    return;
 }
 
-struct HookDef* parse_hookdef_regaddr(int argc, char** argv) {
-    struct HookDef* res = NULL;
+void parse_hookdef_regaddr(int argc, char** argv) {
     struct HookDef* hook_def = NULL;
     struct HookDefRegAddr* args = NULL;
     uint64_t addr;
@@ -91,7 +88,7 @@ struct HookDef* parse_hookdef_regaddr(int argc, char** argv) {
         }
         hook_def->hook_data = (void*)args;
         list_add_tail(&hook_def->node, &hook_def_head);
-        return res;
+        return;
     }
     struct list_head* curr_node = NULL;
     struct SymData* sym = NULL;
@@ -115,35 +112,38 @@ struct HookDef* parse_hookdef_regaddr(int argc, char** argv) {
         list_add_tail(&hook_def->node, &hook_def_head);
     }
     //printf("parse regaddr\n");
-    return res;
+    return;
 }
 
-struct HookDef* parse_hookdef_allregs(int argc, char** argv) {
-    struct HookDef* res = NULL;
+void parse_hookdef_allregs(int argc, char** argv) {
     printf("parse allregs\n");
-    return res;
+    return;
 }
 
-struct HookDef* parse_hookdef_dumpaddr(int argc, char** argv) {
-    struct HookDef* res = NULL;
+void parse_hookdef_dumpaddr(int argc, char** argv) {
     printf("parse dumpaddr\n");
-    return res;
+    return;
 }
-
 
 static struct HookdefParseReq parsereqs[] = {
     { .token = "args", .nargs = 2,
-      .parse_func = &parse_hookdef_args},    // <addr|sym>,<num-regs>
+      .parse_func = &parse_hookdef_args,
+      .arg_desc = "<addr|sym>,<num-regs>"},    // <addr|sym>,<num-regs>
     { .token = "regs", .nargs = 2,
-      .parse_func = &parse_hookdef_regs},       // <addr|sym>,<reglist>
+      .parse_func = &parse_hookdef_regs,
+      .arg_desc = "<addr|sym>,<reglist>"},       // <addr|sym>,<reglist>
     { .token = "regaddr", .nargs = 3,
-      .parse_func = &parse_hookdef_regaddr},    // <addr|sym>,<reg>,<size>
+      .parse_func = &parse_hookdef_regaddr,
+      .arg_desc = "<addr|sym>,<reg>,<size>"},    // <addr|sym>,<reg>,<size>
     { .token = "sym", .nargs = 2,
-      .parse_func = &parse_hookdef_sym},  // <name>,<addr>
+      .parse_func = &parse_hookdef_sym,
+      .arg_desc = "<name>,<addr>"},  // <name>,<addr>
     { .token = "allregs", .nargs = 1,
-      .parse_func = &parse_hookdef_allregs},    // <addr|sym>
+      .parse_func = &parse_hookdef_allregs,
+      .arg_desc = "<addr|sym>"},    // <addr|sym>
     { .token = "dumpaddr", .nargs = 3,
-      .parse_func = &parse_hookdef_dumpaddr},   // <addr|sym>,<addr>,<size>
+      .parse_func = &parse_hookdef_dumpaddr,
+      .arg_desc = "<addr|sym>,<addr>,<size>"},   // <addr|sym>,<addr>,<size>
 };
 
 

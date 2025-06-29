@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include "hookdef_parser.h"
 #include "dyn_hook_defs.h"
 
 int main(int argc, char* argv[]) {
