@@ -111,7 +111,7 @@ struct HookDef* parse_hookdef_regaddr(int argc, char** argv) {
         if (args == NULL) {
             abort();
         }
-        hook_def = new_HookDef(HOOKDEF_ARGS);
+        hook_def = new_HookDef(HOOKDEF_REGADDR);
         if (hook_def == NULL) {
             abort();
         }
