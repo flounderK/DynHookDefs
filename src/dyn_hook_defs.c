@@ -38,7 +38,6 @@ void print_syms() {
 void print_hook_defs() {
     struct list_head* curr_node = NULL;
     struct HookDef* hook_def = NULL;
-    struct HookDefArgs* args;
     struct HookDefRegs* regs;
     list_for_each(curr_node, &hook_def_head) {
         hook_def = list_entry(curr_node, struct HookDef, node);
@@ -46,10 +45,6 @@ void print_hook_defs() {
         switch (hook_def->type) {
             case HOOKDEF_NONE:
                 printf("Illegal none hook type\n");
-                break;
-            case HOOKDEF_ARGS:
-                args = (struct HookDefArgs*)hook_def->hook_data;
-                printf("args: addr 0x%0zx nregs %u\n", args->addr, args->nregs);
                 break;
             case HOOKDEF_REGS:
                 regs = (struct HookDefRegs*)hook_def->hook_data;
@@ -69,18 +64,6 @@ void print_hook_defs() {
 }
 
 
-struct HookDefArgs* new_HookDefArgs(uint64_t addr, uint32_t nregs) {
-    struct HookDefArgs* res = (struct HookDefArgs*)malloc(sizeof(struct HookDefArgs));
-    if (res == NULL) {
-        printf("%s unable to alloc\n", __func__);
-        abort();
-    }
-    memset(res, 0, sizeof(struct HookDefArgs));
-    //printf("args: addr 0x%0zx nregs %u\n", addr, nregs);
-    res->addr = addr;
-    res->nregs = nregs;
-    return res;
-}
 
 struct HookDefRegAddr* new_HookDefRegAddr(uint64_t addr,  uint64_t regno, uint64_t size) {
     struct HookDefRegAddr* res = (struct HookDefRegAddr*)malloc(sizeof(struct HookDefRegAddr));
@@ -130,52 +113,6 @@ void parse_hookdef_sym(int argc, char** argv) {
     add_sym(argv[0], addr);
     //printf("parse sym \"%s\" 0x%0zx\n", argv[0], addr);
     //printf("sym: ptr %p name \"%s\" 0x%0zx\n", (void*)sym, sym->name, sym->addr);
-    return;
-}
-
-void parse_hookdef_args(int argc, char** argv) {
-    //struct HookDef* res = NULL;
-    struct HookDef* hook_def = NULL;
-    struct HookDefArgs* args = NULL;
-    uint64_t addr;
-    uint32_t nregs = strtoul(argv[1], NULL, 10);
-    //printf("args argv[0] %s argv[1] %s\n", argv[0], argv[1]);
-    if (0 == strncasecmp(argv[0], "0x", sizeof("0x")-1)) {
-        addr = strtoull(argv[0], NULL, 16);
-        args = new_HookDefArgs(addr, nregs);
-        if (args == NULL) {
-            abort();
-        }
-        hook_def = new_HookDef(HOOKDEF_ARGS);
-        if (hook_def == NULL) {
-            abort();
-        }
-        hook_def->hook_data = (void*)args;
-        list_add_tail(&hook_def->node, &hook_def_head);
-        return;
-    }
-    struct list_head* curr_node = NULL;
-    struct SymData* sym = NULL;
-    size_t sym_str_len = strlen(argv[0]);
-    list_for_each(curr_node, &sym_list) {
-        sym = list_entry(curr_node, struct SymData, node);
-        //printf("curr node %p sym %p sym name %s sym addr 0x%zx\n", curr_node, sym, sym->name, sym->addr);
-        //fflush(stdout);
-        if (0 != strncmp(sym->name, argv[0], sym_str_len+1)) {
-            continue;
-        }
-        args = new_HookDefArgs(sym->addr, nregs);
-        if (args == NULL) {
-            abort();
-        }
-        hook_def = new_HookDef(HOOKDEF_ARGS);
-        if (hook_def == NULL) {
-            abort();
-        }
-        hook_def->hook_data = (void*)args;
-        list_add_tail(&hook_def->node, &hook_def_head);
-    }
-    //printf("parse args\n");
     return;
 }
 
@@ -240,19 +177,30 @@ void parse_hookdef_dumpaddr(int argc, char** argv) {
 }
 
 
+struct HookDefHandlerInterface sym_handler_intf = {
+    .parse_req = {
+        .token = "sym",
+        .nargs = 2,
+        .parse_func = &parse_hookdef_sym,
+        .arg_desc = "<name>,<addr>"
+    },  // <name>,<addr>
+    .cmd_type = 4,
+};
+
+
+void init_hook_def_sym() {
+    register_handler(&sym_handler_intf);
+}
+
+
+
 static struct HookdefParseReq parsereqs[] = {
-    { .token = "args", .nargs = 2,
-      .parse_func = &parse_hookdef_args,
-      .arg_desc = "<addr|sym>,<num-regs>"},    // <addr|sym>,<num-regs>
     { .token = "regs", .nargs = 2,
       .parse_func = &parse_hookdef_regs,
       .arg_desc = "<addr|sym>,<reglist>"},       // <addr|sym>,<reglist>
     { .token = "regaddr", .nargs = 3,
       .parse_func = &parse_hookdef_regaddr,
       .arg_desc = "<addr|sym>,<reg>,<size>"},    // <addr|sym>,<reg>,<size>
-    { .token = "sym", .nargs = 2,
-      .parse_func = &parse_hookdef_sym,
-      .arg_desc = "<name>,<addr>"},  // <name>,<addr>
     { .token = "allregs", .nargs = 1,
       .parse_func = &parse_hookdef_allregs,
       .arg_desc = "<addr|sym>"},    // <addr|sym>
@@ -268,10 +216,13 @@ void parse_hookdef_cmd(int argc, char** argv){
         //printf("currind %d argc-1 %d\n", currind, argc-1);
         //fflush(stdout);
         parsereq = NULL;
-        for (size_t i = 0; i < sizeof(parsereqs)/sizeof(struct HookdefParseReq); i++) {
+        struct list_head* curr_node = NULL;
+        struct HookDefHandlerInterface* intr = NULL;
+        list_for_each(curr_node, &interface_list) {
+            intr = list_entry(curr_node, struct HookDefHandlerInterface, node);
             // +1 to handle cases where the start of a command name is the same as the entire name of another command
-            if (0 == strncasecmp(parsereqs[i].token, argv[currind], strlen(parsereqs[i].token)+1)) {
-                parsereq = &parsereqs[i];
+            if (0 == strncasecmp(intr->parse_req.token, argv[currind], strlen(intr->parse_req.token)+1)) {
+                parsereq = &intr->parse_req;
                 break;
             }
         }

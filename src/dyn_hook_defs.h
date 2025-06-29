@@ -50,11 +50,6 @@ struct HookDef {
     enum HookDefType type;
 };
 
-struct HookDefArgs {
-    uint64_t addr;
-    uint32_t nregs;
-};
-
 struct RegEntry {
     struct list_head node;
     char* name;
@@ -96,7 +91,8 @@ extern struct list_head interface_list;
 struct SymData* add_sym(char* name, uint64_t addr);
 void print_syms();
 void print_hook_defs();
-struct HookDefArgs* new_HookDefArgs(uint64_t addr, uint32_t nregs);
+void init_hook_def_sym();
 struct HookDef* new_HookDef(enum HookDefType hook_type);
 struct HookDefRegAddr* new_HookDefRegAddr(uint64_t addr,  uint64_t regno, uint64_t size);
+void init_hook_def_sym();
 #endif // DYN_HOOK_DEFS_H

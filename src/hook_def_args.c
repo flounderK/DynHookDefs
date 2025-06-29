@@ -6,6 +6,20 @@
 #include "dyn_hook_defs.h"
 
 
+struct HookDefArgs* new_HookDefArgs(uint64_t addr, uint32_t nregs) {
+    struct HookDefArgs* res = (struct HookDefArgs*)malloc(sizeof(struct HookDefArgs));
+    if (res == NULL) {
+        printf("%s unable to alloc\n", __func__);
+        abort();
+    }
+    memset(res, 0, sizeof(struct HookDefArgs));
+    //printf("args: addr 0x%0zx nregs %u\n", addr, nregs);
+    res->addr = addr;
+    res->nregs = nregs;
+    return res;
+}
+
+
 static void print_args(struct HookDef* hook_def){
     struct HookDefArgs* args;
     args = (struct HookDefArgs*)hook_def->hook_data;
