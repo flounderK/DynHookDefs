@@ -61,13 +61,6 @@ struct HookDefRegs {
     struct list_head reglist_head; // list of RegEntry
 };
 
-struct HookDefRegAddr {
-    uint64_t addr;
-    uint64_t regno;
-    uint64_t size;
-};
-
-
 struct HookDefAllRegs {
     uint64_t addr;
 };
