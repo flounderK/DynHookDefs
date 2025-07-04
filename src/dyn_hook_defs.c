@@ -79,7 +79,11 @@ struct HookDef* new_HookDef(struct HookDefHandlerInterface* hook_def_intf){
     memset(res, 0, sizeof(*res));
     res->handler_interface = hook_def_intf;
     return res;
+}
 
+void destroy_HookDef(struct HookDef* hook_def) {
+    free(hook_def);
+    return;
 }
 
 int register_handler(struct HookDefHandlerInterface* new_handler_int){

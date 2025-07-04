@@ -82,6 +82,6 @@ void print_syms();
 void print_hook_defs();
 void init_hook_def_sym();
 struct HookDef* new_HookDef(struct HookDefHandlerInterface* hook_def_intf);
-struct HookDefRegAddr* new_HookDefRegAddr(uint64_t addr,  uint64_t regno, uint64_t size);
+void destroy_HookDef(struct HookDef* hook_def);
 void init_hook_def_sym();
 #endif // DYN_HOOK_DEFS_H
