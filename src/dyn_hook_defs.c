@@ -67,6 +67,10 @@ void print_hook_defs() {
 }
 
 struct HookDef* new_HookDef(struct HookDefHandlerInterface* hook_def_intf){
+    if (hook_def_intf == NULL) {
+        printf("%s hook def intf is null\n", __func__);
+        abort();
+    }
     struct HookDef* res = (struct HookDef*)malloc(sizeof(struct HookDef));
     if (res == NULL) {
         printf("%s unable to alloc\n", __func__);
