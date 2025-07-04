@@ -5,6 +5,7 @@
 #include "hook_def_args.h"
 #include "dyn_hook_defs.h"
 
+struct HookDefHandlerInterface args_handler_intf;
 
 struct HookDefArgs* new_HookDefArgs(uint64_t addr, uint32_t nregs) {
     struct HookDefArgs* res = (struct HookDefArgs*)malloc(sizeof(struct HookDefArgs));
@@ -39,7 +40,7 @@ static void parse_hookdef_args(int argc, char** argv) {
         if (args == NULL) {
             abort();
         }
-        hook_def = new_HookDef(HOOKDEF_ARGS);
+        hook_def = new_HookDef(&args_handler_intf);
         if (hook_def == NULL) {
             abort();
         }
@@ -61,7 +62,7 @@ static void parse_hookdef_args(int argc, char** argv) {
         if (args == NULL) {
             abort();
         }
-        hook_def = new_HookDef(HOOKDEF_ARGS);
+        hook_def = new_HookDef(&args_handler_intf);
         if (hook_def == NULL) {
             abort();
         }
@@ -81,8 +82,7 @@ struct HookDefHandlerInterface args_handler_intf = {
         .parse_func = &parse_hookdef_args,
         .arg_desc = "<addr|sym>,<num-regs>"
     },
-    .print = &print_args,
-    .cmd_type = 1,
+    .print = &print_args
 };
 
 

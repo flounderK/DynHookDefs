@@ -7,6 +7,7 @@
 #include "dyn_hook_defs.h"
 #include "hook_def_regaddr.h"
 
+struct HookDefHandlerInterface regaddr_handler_intf;
 
 struct HookDefRegAddr* new_HookDefRegAddr(uint64_t addr,  uint64_t regno, uint64_t size) {
     struct HookDefRegAddr* res = (struct HookDefRegAddr*)malloc(sizeof(struct HookDefRegAddr));
@@ -34,7 +35,7 @@ void parse_hookdef_regaddr(int argc, char** argv) {
         if (args == NULL) {
             abort();
         }
-        hook_def = new_HookDef(HOOKDEF_REGADDR);
+        hook_def = new_HookDef(&regaddr_handler_intf);
         if (hook_def == NULL) {
             abort();
         }
@@ -56,7 +57,7 @@ void parse_hookdef_regaddr(int argc, char** argv) {
         if (args == NULL) {
             abort();
         }
-        hook_def = new_HookDef(HOOKDEF_REGADDR);
+        hook_def = new_HookDef(&regaddr_handler_intf);
         if (hook_def == NULL) {
             abort();
         }
@@ -81,8 +82,7 @@ struct HookDefHandlerInterface regaddr_handler_intf = {
         .parse_func = &parse_hookdef_regaddr,
         .arg_desc = "<addr|sym>,<reg>,<size>"
     },    // <addr|sym>,<reg>,<size>
-    .print = &print_regaddr,
-    .cmd_type = 3,
+    .print = &print_regaddr
 };
 
 

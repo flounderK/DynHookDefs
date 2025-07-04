@@ -23,7 +23,6 @@ struct HookDefHandlerInterface {
     void (*destroy)(struct HookDef*);
     void (*enable)(struct HookDef*);
     void* handler_func;
-    int cmd_type;
 };
 
 enum HookDefType {
@@ -47,7 +46,6 @@ struct HookDef {
     void* hook_data;  // pointer to struct like `struct HookDefArgs*`
     void* handler;    // function for handling
     struct HookDefHandlerInterface* handler_interface;
-    enum HookDefType type;
 };
 
 struct RegEntry {
@@ -73,8 +71,6 @@ struct HookDefDumpAddr {
 };
 
 
-
-
 int register_handler(struct HookDefHandlerInterface* handler_int);
 void parse_hookdef_cmd(int argc, char* argv[]);
 
@@ -85,7 +81,7 @@ struct SymData* add_sym(char* name, uint64_t addr);
 void print_syms();
 void print_hook_defs();
 void init_hook_def_sym();
-struct HookDef* new_HookDef(enum HookDefType hook_type);
+struct HookDef* new_HookDef(struct HookDefHandlerInterface* hook_def_intf);
 struct HookDefRegAddr* new_HookDefRegAddr(uint64_t addr,  uint64_t regno, uint64_t size);
 void init_hook_def_sym();
 #endif // DYN_HOOK_DEFS_H

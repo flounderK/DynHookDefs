@@ -42,6 +42,10 @@ void print_hook_defs() {
     list_for_each(curr_node, &hook_def_head) {
         hook_def = list_entry(curr_node, struct HookDef, node);
         printf("handler %p ", hook_def->handler);
+        if (hook_def->handler_interface->print != NULL) {
+            hook_def->handler_interface->print(hook_def);
+        }
+        /*
         switch (hook_def->type) {
             case HOOKDEF_NONE:
                 printf("Illegal none hook type\n");
@@ -58,36 +62,26 @@ void print_hook_defs() {
                 printf("unknown hook type\n");
                 break;
         }
+        */
     }
 }
 
-struct HookDef* new_HookDef(enum HookDefType hook_type){
+struct HookDef* new_HookDef(struct HookDefHandlerInterface* hook_def_intf){
     struct HookDef* res = (struct HookDef*)malloc(sizeof(struct HookDef));
     if (res == NULL) {
         printf("%s unable to alloc\n", __func__);
         abort();
     }
     memset(res, 0, sizeof(*res));
-    res->type = hook_type;
+    res->handler_interface = hook_def_intf;
     return res;
 
 }
 
 int register_handler(struct HookDefHandlerInterface* new_handler_int){
     int res = -1;
-    struct list_head* curr_node;
-    struct HookDefHandlerInterface* curr_hand = NULL;
-    list_for_each(curr_node, &interface_list) {
-        curr_hand = list_entry(curr_node, struct HookDefHandlerInterface, node);
-        if (new_handler_int->cmd_type == curr_hand->cmd_type) {
-            printf("handler for cmd %d already exists\n", new_handler_int->cmd_type);
-            goto exit;
-        }
-    }
-
     list_add_tail(&new_handler_int->node, &interface_list);
     res = 0;
-exit:
     return res;
 }
 
@@ -123,7 +117,6 @@ struct HookDefHandlerInterface sym_handler_intf = {
         .parse_func = &parse_hookdef_sym,
         .arg_desc = "<name>,<addr>"
     },  // <name>,<addr>
-    .cmd_type = 4,
 };
 
 
