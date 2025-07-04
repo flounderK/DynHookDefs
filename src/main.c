@@ -5,12 +5,14 @@
 #include "dyn_hook_defs.h"
 #include "hook_def_args.h"
 #include "hook_def_regaddr.h"
+#include "hook_def_regs.h"
 #include "parse_utils.h"
 
 int main(int argc, char* argv[]) {
     init_hook_def_sym();
     init_hook_def_args();
     init_hook_def_regaddr();
+    init_hook_def_regs();
     parse_hookdef_cmd(argc-1, &argv[1]);
     printf("syms:\n");
     print_syms();

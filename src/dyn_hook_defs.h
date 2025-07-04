@@ -48,17 +48,6 @@ struct HookDef {
     struct HookDefHandlerInterface* handler_interface;
 };
 
-struct RegEntry {
-    struct list_head node;
-    char* name;
-    uint64_t regno;
-};
-
-struct HookDefRegs {
-    uint64_t addr;
-    struct list_head reglist_head; // list of RegEntry
-};
-
 struct HookDefAllRegs {
     uint64_t addr;
 };
