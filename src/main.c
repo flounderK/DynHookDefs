@@ -5,6 +5,7 @@
 #include "dyn_hook_defs.h"
 #include "hook_def_args.h"
 #include "hook_def_regaddr.h"
+#include "parse_utils.h"
 
 int main(int argc, char* argv[]) {
     init_hook_def_sym();
