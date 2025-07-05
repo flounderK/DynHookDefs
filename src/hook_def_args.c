@@ -6,8 +6,6 @@
 #include "dyn_hook_defs.h"
 #include "hook_def_syms.h"
 
-struct HookDefHandlerInterface args_handler_intf;
-
 struct HookDefArgs* new_HookDefArgs(uint64_t addr, uint32_t nregs) {
     struct HookDefArgs* res = (struct HookDefArgs*)malloc(sizeof(struct HookDefArgs));
     if (res == NULL) {
@@ -84,8 +82,6 @@ struct HookDefParseReq args_parse_req = {   // <addr|sym>,<num-regs>
     .parse_func = &parse_hookdef_args,
     .arg_desc = "<addr|sym>,<num-regs>"
 };
-
-
 
 
 void init_hook_def_args() {
