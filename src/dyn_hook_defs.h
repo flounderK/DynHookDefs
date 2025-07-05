@@ -46,13 +46,6 @@ struct HookDefAllRegs {
 };
 
 
-struct HookDefDumpAddr {
-    uint64_t addr;
-    uint64_t dumpaddr;
-    uint64_t size;
-};
-
-
 int register_parse_handler(struct HookDefParseReq* new_handler_int);
 void parse_hookdef_cmd(int argc, char* argv[]);
 

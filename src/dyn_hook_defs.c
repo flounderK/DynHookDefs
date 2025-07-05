@@ -83,9 +83,6 @@ static struct HookDefParseReq parsereqs[] = {
     { .token = "allregs", .nargs = 1,
       .parse_func = &parse_hookdef_allregs,
       .arg_desc = "<addr|sym>"},    // <addr|sym>
-    { .token = "dumpaddr", .nargs = 3,
-      .parse_func = &parse_hookdef_dumpaddr,
-      .arg_desc = "<addr|sym>,<addr>,<size>"},   // <addr|sym>,<addr>,<size>
 };
 
 void parse_hookdef_cmd(int argc, char** argv){

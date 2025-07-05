@@ -8,12 +8,14 @@
 #include "hook_def_regs.h"
 #include "parse_utils.h"
 #include "hook_def_syms.h"
+#include "hook_def_dumpaddr.h"
 
 int main(int argc, char* argv[]) {
     init_hook_def_sym();
     init_hook_def_args();
     init_hook_def_regaddr();
     init_hook_def_regs();
+    init_hook_def_dumpaddr();
     parse_hookdef_cmd(argc-1, &argv[1]);
     printf("syms:\n");
     print_syms();
