@@ -67,7 +67,7 @@ void parse_hookdef_cmd(int argc, char* argv[]);
 
 extern struct list_head sym_list;
 extern struct list_head hook_def_head;
-extern struct list_head interface_list;
+extern struct list_head parse_req_list;
 struct SymData* add_sym(char* name, uint64_t addr);
 void print_syms();
 void print_hook_defs();
