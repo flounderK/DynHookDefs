@@ -55,11 +55,6 @@ void parse_hookdef_allregs(struct HookDefHandlerInterface* intf, int argc, char*
     return;
 }
 
-void parse_hookdef_dumpaddr(struct HookDefHandlerInterface* intf, int argc, char** argv) {
-    printf("parse dumpaddr\n");
-    return;
-}
-
 static struct HookDefParseReq parsereqs[] = {
     { .token = "allregs", .nargs = 1,
       .parse_func = &parse_hookdef_allregs,
