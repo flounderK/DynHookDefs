@@ -8,12 +8,12 @@ static uint32_t default_regname_to_regno(char* regname) {
     return 0;
 }
 
-static const char* default_regno_to_reg_name(uint32_t regno){
+static char* default_regno_to_reg_name(uint32_t regno){
     printf("WARNING: default impl of %s, you need to register an ArchOps\n", __func__);
     return NULL;
 }
 
-static const uint64_t default_argno_to_arg_value(uint32_t argno) {
+static uint64_t default_argno_to_arg_value(uint32_t argno) {
     printf("WARNING: default impl of %s, you need to register an ArchOps\n", __func__);
     return 0;
 }
