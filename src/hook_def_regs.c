@@ -6,8 +6,6 @@
 #include "dyn_hook_defs.h"
 #include "hook_def_syms.h"
 
-struct HookDefHandlerInterface regs_handler_intf;
-
 struct HookDefRegs* new_HookDefRegs(uint64_t addr) {
     struct HookDefRegs* res = (struct HookDefRegs*)malloc(sizeof(struct HookDefRegs));
     if (res == NULL) {
@@ -15,7 +13,6 @@ struct HookDefRegs* new_HookDefRegs(uint64_t addr) {
         abort();
     }
     memset(res, 0, sizeof(struct HookDefRegs));
-    //printf("args: addr 0x%0zx nregs %u\n", addr, nregs);
     res->addr = addr;
     return res;
 }
@@ -28,11 +25,9 @@ static void print_regs(struct HookDef* hook_def){
 }
 
 static void parse_hookdef_regs(struct HookDefHandlerInterface* intf, int argc, char** argv) {
-    //struct HookDef* res = NULL;
     struct HookDef* hook_def = NULL;
     struct HookDefRegs* regs = NULL;
     uint64_t addr;
-    //printf("regs argv[0] %s argv[1] %s\n", argv[0], argv[1]);
     if (0 == strncasecmp(argv[0], "0x", sizeof("0x")-1)) {
         addr = strtoull(argv[0], NULL, 16);
         regs = new_HookDefRegs(addr);
@@ -52,8 +47,6 @@ static void parse_hookdef_regs(struct HookDefHandlerInterface* intf, int argc, c
     size_t sym_str_len = strlen(argv[0]);
     list_for_each(curr_node, &sym_list) {
         sym = list_entry(curr_node, struct SymData, node);
-        //printf("curr node %p sym %p sym name %s sym addr 0x%zx\n", curr_node, sym, sym->name, sym->addr);
-        //fflush(stdout);
         if (0 != strncmp(sym->name, argv[0], sym_str_len+1)) {
             continue;
         }
@@ -68,7 +61,6 @@ static void parse_hookdef_regs(struct HookDefHandlerInterface* intf, int argc, c
         hook_def->hook_data = (void*)regs;
         list_add_tail(&hook_def->node, &hook_def_head);
     }
-    //printf("parse regs\n");
     return;
 }
 

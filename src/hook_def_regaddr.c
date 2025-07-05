@@ -8,8 +8,6 @@
 #include "hook_def_regaddr.h"
 #include "hook_def_syms.h"
 
-struct HookDefHandlerInterface regaddr_handler_intf;
-
 struct HookDefRegAddr* new_HookDefRegAddr(uint64_t addr,  uint64_t regno, uint64_t size) {
     struct HookDefRegAddr* res = (struct HookDefRegAddr*)malloc(sizeof(struct HookDefRegAddr));
     if (res == NULL) {
@@ -49,8 +47,6 @@ void parse_hookdef_regaddr(struct HookDefHandlerInterface* intf, int argc, char*
     size_t sym_str_len = strlen(argv[0]);
     list_for_each(curr_node, &sym_list) {
         sym = list_entry(curr_node, struct SymData, node);
-        //printf("curr node %p sym %p sym name %s\n", curr_node, sym, sym->name);
-        //fflush(stdout);
         if (0 != strncmp(sym->name, argv[0], sym_str_len+1)) {
             continue;
         }
@@ -65,7 +61,6 @@ void parse_hookdef_regaddr(struct HookDefHandlerInterface* intf, int argc, char*
         hook_def->hook_data = (void*)args;
         list_add_tail(&hook_def->node, &hook_def_head);
     }
-    //printf("parse regaddr\n");
     return;
 }
 

@@ -65,7 +65,6 @@ static void parse_hookdef_dumpaddr(struct HookDefHandlerInterface* intf, int arg
         hook_def->hook_data = (void*)dumpaddr;
         list_add_tail(&hook_def->node, &hook_def_head);
     }
-    //printf("parse dumpaddr\n");
     return;
 }
 
