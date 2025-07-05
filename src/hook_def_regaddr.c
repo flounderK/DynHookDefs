@@ -23,7 +23,7 @@ struct HookDefRegAddr* new_HookDefRegAddr(uint64_t addr,  uint64_t regno, uint64
 }
 
 
-void parse_hookdef_regaddr(int argc, char** argv) {
+void parse_hookdef_regaddr(struct HookDefHandlerInterface* intf, int argc, char** argv) {
     struct HookDef* hook_def = NULL;
     struct HookDefRegAddr* args = NULL;
     uint64_t addr;
@@ -35,7 +35,7 @@ void parse_hookdef_regaddr(int argc, char** argv) {
         if (args == NULL) {
             abort();
         }
-        hook_def = new_HookDef(&regaddr_handler_intf);
+        hook_def = new_HookDef(intf);
         if (hook_def == NULL) {
             abort();
         }
@@ -57,7 +57,7 @@ void parse_hookdef_regaddr(int argc, char** argv) {
         if (args == NULL) {
             abort();
         }
-        hook_def = new_HookDef(&regaddr_handler_intf);
+        hook_def = new_HookDef(intf);
         if (hook_def == NULL) {
             abort();
         }
@@ -76,17 +76,20 @@ void print_regaddr(struct HookDef* hook_def) {
 
 
 struct HookDefHandlerInterface regaddr_handler_intf = {
-    .parse_req = {
-        .token = "regaddr",
-        .nargs = 3,
-        .parse_func = &parse_hookdef_regaddr,
-        .arg_desc = "<addr|sym>,<reg>,<size>"
-    },    // <addr|sym>,<reg>,<size>
     .print = &print_regaddr
 };
 
 
+struct HookDefParseReq regaddr_parse_req = {
+    .token = "regaddr",
+    .nargs = 3,
+    .parse_func = &parse_hookdef_regaddr,
+    .arg_desc = "<addr|sym>,<reg>,<size>"
+};
+
+
 void init_hook_def_regaddr() {
-    register_handler(&regaddr_handler_intf);
+    regaddr_parse_req.intf = &regaddr_handler_intf;
+    register_parse_handler(&regaddr_parse_req);
 }
 
