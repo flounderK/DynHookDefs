@@ -11,7 +11,6 @@
 struct list_head hook_def_head = LIST_HEAD_INIT(hook_def_head);
 struct list_head parse_req_list = LIST_HEAD_INIT(parse_req_list);
 
-
 void print_hook_defs() {
     struct list_head* curr_node = NULL;
     struct HookDef* hook_def = NULL;
@@ -21,24 +20,6 @@ void print_hook_defs() {
         if (hook_def->intf->print != NULL) {
             hook_def->intf->print(hook_def);
         }
-        /*
-        switch (hook_def->type) {
-            case HOOKDEF_NONE:
-                printf("Illegal none hook type\n");
-                break;
-            case HOOKDEF_REGS:
-                regs = (struct HookDefRegs*)hook_def->hook_data;
-                printf("regs: addr 0x%zx\n", regs->addr);
-                break;
-            case HOOKDEF_ALLREGS:
-                break;
-            case HOOKDEF_DUMPADDR:
-                break;
-            default:
-                printf("unknown hook type\n");
-                break;
-        }
-        */
     }
 }
 
