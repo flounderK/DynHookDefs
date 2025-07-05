@@ -131,7 +131,6 @@ void init_hook_def_sym() {
 }
 
 
-
 static struct HookDefParseReq parsereqs[] = {
     { .token = "allregs", .nargs = 1,
       .parse_func = &parse_hookdef_allregs,
@@ -145,8 +144,8 @@ void parse_hookdef_cmd(int argc, char** argv){
     int currind = 0;
     struct HookDefParseReq* parsereq = NULL;
     while ((currind < argc-1) && argv[currind] != NULL) {
-        //printf("currind %d argc-1 %d\n", currind, argc-1);
-        //fflush(stdout);
+        //printf("currind %d: argv[currind] %s\n", currind, argv[currind]); fflush(stdout);
+        parsereq = NULL;
         struct list_head* curr_node = NULL;
         list_for_each(curr_node, &parse_req_list) {
             parsereq = list_entry(curr_node, struct HookDefParseReq, node);
@@ -158,7 +157,7 @@ void parse_hookdef_cmd(int argc, char** argv){
         }
 
         currind++;
-        if (parsereq == NULL) {
+        if (curr_node == &parse_req_list || parsereq == NULL) {
             printf("invalid hook type %s\n", argv[currind-1]);
             fflush(stdout);
             continue;
