@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "hook_def_args.h"
 #include "dyn_hook_defs.h"
+#include "hook_def_syms.h"
 
 struct HookDefHandlerInterface args_handler_intf;
 

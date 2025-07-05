@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "hook_def_regs.h"
 #include "dyn_hook_defs.h"
+#include "hook_def_syms.h"
 
 struct HookDefHandlerInterface regs_handler_intf;
 

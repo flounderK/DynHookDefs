@@ -7,6 +7,7 @@
 #include "hook_def_regaddr.h"
 #include "hook_def_regs.h"
 #include "parse_utils.h"
+#include "hook_def_syms.h"
 
 int main(int argc, char* argv[]) {
     init_hook_def_sym();

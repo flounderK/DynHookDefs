@@ -8,32 +8,9 @@
 #include "intrusive_list.h"
 #include "dyn_hook_defs.h"
 
-struct list_head sym_list = LIST_HEAD_INIT(sym_list);
 struct list_head hook_def_head = LIST_HEAD_INIT(hook_def_head);
 struct list_head parse_req_list = LIST_HEAD_INIT(parse_req_list);
 
-struct SymData* add_sym(char* name, uint64_t addr) {
-    struct SymData* dat = (struct SymData*)malloc(sizeof(struct SymData));
-    if (dat == NULL) {
-        printf("failed to alloc SymDat\n");
-        abort();
-    }
-    memset(dat, 0, sizeof(struct SymData));
-    dat->name = strdup(name);
-    dat->addr = addr;
-    list_add_tail(&dat->node, &sym_list);
-    return dat;
-}
-
-
-void print_syms() {
-    struct list_head* curr_node = NULL;
-    struct SymData* sym = NULL;
-    list_for_each(curr_node, &sym_list) {
-        sym = list_entry(curr_node, struct SymData, node);
-        printf("%s @ 0x%0zx\n", sym->name, sym->addr);
-    }
-}
 
 void print_hook_defs() {
     struct list_head* curr_node = NULL;
@@ -75,7 +52,7 @@ struct HookDef* new_HookDef(struct HookDefHandlerInterface* hook_def_intf){
         printf("%s unable to alloc\n", __func__);
         abort();
     }
-    memset(res, 0, sizeof(*res));
+    memset(res, 0, sizeof(struct HookDef));
     res->intf = hook_def_intf;
     return res;
 }
@@ -92,15 +69,6 @@ int register_parse_handler(struct HookDefParseReq* new_parse_req){
     return res;
 }
 
-void parse_hookdef_sym(struct HookDefHandlerInterface* intf, int argc, char** argv) {
-    uint64_t addr = strtoull(argv[1], NULL, 16);
-    add_sym(argv[0], addr);
-    //printf("parse sym \"%s\" 0x%0zx\n", argv[0], addr);
-    //printf("sym: ptr %p name \"%s\" 0x%0zx\n", (void*)sym, sym->name, sym->addr);
-    return;
-}
-
-
 void parse_hookdef_allregs(struct HookDefHandlerInterface* intf, int argc, char** argv) {
     printf("parse allregs\n");
     return;
@@ -110,26 +78,6 @@ void parse_hookdef_dumpaddr(struct HookDefHandlerInterface* intf, int argc, char
     printf("parse dumpaddr\n");
     return;
 }
-
-struct HookDefParseReq sym_parse_req = {
-    .token = "sym",
-    .nargs = 2,
-    .parse_func = &parse_hookdef_sym,
-    .arg_desc = "<name>,<addr>"
-};
-
-
-/*
-struct HookDefHandlerInterface sym_handler_intf = {
-};
-*/
-
-
-void init_hook_def_sym() {
-    register_parse_handler(&sym_parse_req);
-    //register_handler(&sym_handler_intf);
-}
-
 
 static struct HookDefParseReq parsereqs[] = {
     { .token = "allregs", .nargs = 1,

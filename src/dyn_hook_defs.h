@@ -3,8 +3,6 @@
 #include <stdint.h>
 #include "intrusive_list.h"
 
-
-
 struct HookDef;
 
 // structure for registering new handlers for parsing values to a HookDef object in different engines
@@ -36,12 +34,6 @@ enum HookDefType {
     HOOKDEF_DUMPADDR,
 };
 
-struct SymData {
-    struct list_head node;
-    char* name;
-    uint64_t addr;
-};
-
 struct HookDef {
     struct list_head node;
     void* hook_data;  // pointer to struct like `struct HookDefArgs*`
@@ -62,17 +54,11 @@ struct HookDefDumpAddr {
 
 
 int register_parse_handler(struct HookDefParseReq* new_handler_int);
-//int register_handler(struct HookDefHandlerInterface* handler_int);
 void parse_hookdef_cmd(int argc, char* argv[]);
 
-extern struct list_head sym_list;
 extern struct list_head hook_def_head;
 extern struct list_head parse_req_list;
-struct SymData* add_sym(char* name, uint64_t addr);
-void print_syms();
 void print_hook_defs();
-void init_hook_def_sym();
 struct HookDef* new_HookDef(struct HookDefHandlerInterface* hook_def_intf);
 void destroy_HookDef(struct HookDef* hook_def);
-void init_hook_def_sym();
 #endif // DYN_HOOK_DEFS_H

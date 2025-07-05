@@ -6,6 +6,7 @@
 #include "intrusive_list.h"
 #include "dyn_hook_defs.h"
 #include "hook_def_regaddr.h"
+#include "hook_def_syms.h"
 
 struct HookDefHandlerInterface regaddr_handler_intf;
 
