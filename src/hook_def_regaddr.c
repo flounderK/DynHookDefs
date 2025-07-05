@@ -7,6 +7,7 @@
 #include "dyn_hook_defs.h"
 #include "hook_def_regaddr.h"
 #include "hook_def_syms.h"
+#include "arch_utils.h"
 
 struct HookDefRegAddr* new_HookDefRegAddr(uint64_t addr,  uint64_t regno, uint64_t size) {
     struct HookDefRegAddr* res = (struct HookDefRegAddr*)malloc(sizeof(struct HookDefRegAddr));
@@ -26,7 +27,8 @@ void parse_hookdef_regaddr(struct HookDefHandlerInterface* intf, int argc, char*
     struct HookDef* hook_def = NULL;
     struct HookDefRegAddr* args = NULL;
     uint64_t addr;
-    uint64_t regno = strtoul(argv[1], NULL, 10); // TODO: actually find regno from reg name
+    struct ArchOps* arch_ops = get_arch_ops();
+    uint64_t regno = arch_ops->regname_to_regno(argv[1]);
     uint64_t size = strtoul(argv[2], NULL, 10);
     if (0 == strncasecmp(argv[0], "0x", sizeof("0x")-1)) {
         addr = strtoull(argv[0], NULL, 16);
