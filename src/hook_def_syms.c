@@ -32,7 +32,7 @@ void print_syms() {
     }
 }
 
-void parse_hookdef_sym(struct HookDefHandlerInterface* intf, int argc, char** argv) {
+void parse_hookdef_sym(struct HookDefParseReq* parse_req, int argc, char** argv) {
     uint64_t addr = strtoull(argv[1], NULL, 16);
     add_sym(argv[0], addr);
     //printf("parse sym \"%s\" 0x%0zx\n", argv[0], addr);
@@ -40,8 +40,7 @@ void parse_hookdef_sym(struct HookDefHandlerInterface* intf, int argc, char** ar
     return;
 }
 
-struct HookDefHandlerInterface sym_handler_intf = {
-};
+struct HookDefHandlerInterface sym_handler_intf;
 
 struct HookDefParseReq sym_parse_req = {
     .token = "sym",

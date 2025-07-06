@@ -55,7 +55,7 @@ struct RegEntry* parse_reglist_to_reg_entry_array(int argc, char** argv) {
     return res;
 }
 
-static void parse_hookdef_regs(struct HookDefHandlerInterface* intf, int argc, char** argv) {
+static void parse_hookdef_regs(struct HookDefParseReq* parse_req, int argc, char** argv) {
     struct HookDef* hook_def = NULL;
     struct HookDefRegs* regs = NULL;
     uint64_t addr;
@@ -80,7 +80,7 @@ static void parse_hookdef_regs(struct HookDefHandlerInterface* intf, int argc, c
         if (regs == NULL) {
             abort();
         }
-        hook_def = new_HookDef(intf);
+        hook_def = new_HookDef(parse_req);
         if (hook_def == NULL) {
             abort();
         }
@@ -101,7 +101,7 @@ static void parse_hookdef_regs(struct HookDefHandlerInterface* intf, int argc, c
         if (regs == NULL) {
             abort();
         }
-        hook_def = new_HookDef(intf);
+        hook_def = new_HookDef(parse_req);
         if (hook_def == NULL) {
             abort();
         }
@@ -125,18 +125,14 @@ exit:
 }
 
 
+struct HookDefHandlerInterface regs_handler_intf;
 
 struct HookDefParseReq regs_parse_req = {
     .token = "regs", .nargs = 2,
     .parse_func = &parse_hookdef_regs,
-    .arg_desc = "<addr|sym>,<reglist>"
-};
-
-
-struct HookDefHandlerInterface regs_handler_intf = {
+    .arg_desc = "<addr|sym>,<reglist>",
     .print = &print_regs
 };
-
 
 void init_hook_def_regs() {
     regs_parse_req.intf = &regs_handler_intf;

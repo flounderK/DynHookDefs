@@ -26,7 +26,7 @@ static void print_args(struct HookDef* hook_def){
     printf("args: addr 0x%0zx nregs %u\n", args->addr, args->nregs);
 }
 
-static void parse_hookdef_args(struct HookDefHandlerInterface* intf, int argc, char** argv) {
+static void parse_hookdef_args(struct HookDefParseReq* parse_req, int argc, char** argv) {
     //struct HookDef* res = NULL;
     struct HookDef* hook_def = NULL;
     struct HookDefArgs* args = NULL;
@@ -39,7 +39,7 @@ static void parse_hookdef_args(struct HookDefHandlerInterface* intf, int argc, c
         if (args == NULL) {
             abort();
         }
-        hook_def = new_HookDef(intf);
+        hook_def = new_HookDef(parse_req);
         if (hook_def == NULL) {
             abort();
         }
@@ -61,7 +61,7 @@ static void parse_hookdef_args(struct HookDefHandlerInterface* intf, int argc, c
         if (args == NULL) {
             abort();
         }
-        hook_def = new_HookDef(intf);
+        hook_def = new_HookDef(parse_req);
         if (hook_def == NULL) {
             abort();
         }
@@ -72,15 +72,14 @@ static void parse_hookdef_args(struct HookDefHandlerInterface* intf, int argc, c
     return;
 }
 
-struct HookDefHandlerInterface args_handler_intf = {
-    .print = &print_args
-};
+struct HookDefHandlerInterface args_handler_intf;
 
 struct HookDefParseReq args_parse_req = {   // <addr|sym>,<num-regs>
     .token = "args",
     .nargs = 2,
     .parse_func = &parse_hookdef_args,
-    .arg_desc = "<addr|sym>,<num-regs>"
+    .arg_desc = "<addr|sym>,<num-regs>",
+    .print = &print_args
 };
 
 

@@ -9,7 +9,6 @@ struct HookDef;
 struct HookDefHandlerInterface {
     //void* data;
     //void* (*create)();
-    void (*print)(struct HookDef*);
     void (*destroy)(struct HookDef*);
     void (*enable)(struct HookDef*);
     void* handler_func;
@@ -18,8 +17,9 @@ struct HookDefHandlerInterface {
 struct HookDefParseReq {
     struct list_head node;
     char* token;
-    void (*parse_func)(struct HookDefHandlerInterface* intf, int argc, char** argv);
+    void (*parse_func)(struct HookDefParseReq* intf, int argc, char** argv);
     char* arg_desc;
+    void (*print)(struct HookDef*);
     struct HookDefHandlerInterface* intf;
     int nargs;
 };
@@ -39,6 +39,7 @@ struct HookDef {
     void* hook_data;  // pointer to struct like `struct HookDefArgs*`
     void* handler;    // function for handling
     struct HookDefHandlerInterface* intf;
+    struct HookDefParseReq* parse_req;
 };
 
 struct HookDefAllRegs {
@@ -52,6 +53,6 @@ void parse_hookdef_cmd(int argc, char* argv[]);
 extern struct list_head hook_def_head;
 extern struct list_head parse_req_list;
 void print_hook_defs();
-struct HookDef* new_HookDef(struct HookDefHandlerInterface* hook_def_intf);
+struct HookDef* new_HookDef(struct HookDefParseReq* parse_req);
 void destroy_HookDef(struct HookDef* hook_def);
 #endif // DYN_HOOK_DEFS_H

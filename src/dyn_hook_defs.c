@@ -17,14 +17,14 @@ void print_hook_defs() {
     list_for_each(curr_node, &hook_def_head) {
         hook_def = list_entry(curr_node, struct HookDef, node);
         printf("handler %p ", hook_def->handler);
-        if (hook_def->intf->print != NULL) {
-            hook_def->intf->print(hook_def);
+        if (hook_def->parse_req->print != NULL) {
+            hook_def->parse_req->print(hook_def);
         }
     }
 }
 
-struct HookDef* new_HookDef(struct HookDefHandlerInterface* hook_def_intf){
-    if (hook_def_intf == NULL) {
+struct HookDef* new_HookDef(struct HookDefParseReq* parse_req){
+    if (parse_req == NULL) {
         printf("%s hook def intf is null\n", __func__);
         abort();
     }
@@ -34,7 +34,8 @@ struct HookDef* new_HookDef(struct HookDefHandlerInterface* hook_def_intf){
         abort();
     }
     memset(res, 0, sizeof(struct HookDef));
-    res->intf = hook_def_intf;
+    res->parse_req = parse_req;
+    res->intf = parse_req->intf;
     return res;
 }
 
@@ -50,7 +51,7 @@ int register_parse_handler(struct HookDefParseReq* new_parse_req){
     return res;
 }
 
-void parse_hookdef_allregs(struct HookDefHandlerInterface* intf, int argc, char** argv) {
+void parse_hookdef_allregs(struct HookDefParseReq* parse_req, int argc, char** argv) {
     printf("parse allregs\n");
     return;
 }
@@ -91,7 +92,7 @@ void parse_hookdef_cmd(int argc, char** argv){
         }
 
         if (parsereq->parse_func != NULL) {
-            parsereq->parse_func(parsereq->intf, parsereq->nargs, &argv[currind]);
+            parsereq->parse_func(parsereq, parsereq->nargs, &argv[currind]);
         }
         currind += parsereq->nargs;
     }

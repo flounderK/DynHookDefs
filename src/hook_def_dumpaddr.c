@@ -26,7 +26,7 @@ static void print_dumpaddr(struct HookDef* hook_def){
     printf("dumpaddr: addr 0x%0zx dumpaddr 0x%0zx size %zu\n", dat->addr, dat->dumpaddr, dat->size);
 }
 
-static void parse_hookdef_dumpaddr(struct HookDefHandlerInterface* intf, int argc, char** argv) {
+static void parse_hookdef_dumpaddr(struct HookDefParseReq* parse_req, int argc, char** argv) {
     struct HookDef* hook_def = NULL;
     struct HookDefDumpAddr* dumpaddr = NULL;
     uint64_t addr;
@@ -38,7 +38,7 @@ static void parse_hookdef_dumpaddr(struct HookDefHandlerInterface* intf, int arg
         if (dumpaddr == NULL) {
             abort();
         }
-        hook_def = new_HookDef(intf);
+        hook_def = new_HookDef(parse_req);
         if (hook_def == NULL) {
             abort();
         }
@@ -58,7 +58,7 @@ static void parse_hookdef_dumpaddr(struct HookDefHandlerInterface* intf, int arg
         if (dumpaddr == NULL) {
             abort();
         }
-        hook_def = new_HookDef(intf);
+        hook_def = new_HookDef(parse_req);
         if (hook_def == NULL) {
             abort();
         }
@@ -68,14 +68,13 @@ static void parse_hookdef_dumpaddr(struct HookDefHandlerInterface* intf, int arg
     return;
 }
 
-struct HookDefHandlerInterface dumpaddr_handler_intf = {
-    .print = &print_dumpaddr
-};
+struct HookDefHandlerInterface dumpaddr_handler_intf;
 
 struct HookDefParseReq dumpaddr_parse_req = {
     .token = "dumpaddr", .nargs = 3,
     .parse_func = &parse_hookdef_dumpaddr,
-    .arg_desc = "<addr|sym>,<addr>,<size>"
+    .arg_desc = "<addr|sym>,<addr>,<size>",
+    .print = &print_dumpaddr
 };   // <addr|sym>,<addr>,<size>
 
 
