@@ -2,6 +2,7 @@
 #define HOOK_DEF_REGS_H
 #include <stdint.h>
 #include "intrusive_list.h"
+#include "dyn_hook_defs.h"
 
 struct RegEntry {
     char* regname;
@@ -14,5 +15,5 @@ struct HookDefRegs {
     uint64_t addr;
 };
 
-void init_hook_def_regs();
+void init_hook_def_regs(struct HookDefHandlerInterface*);
 #endif //HOOK_DEF_REGS_H

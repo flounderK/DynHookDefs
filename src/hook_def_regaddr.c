@@ -85,8 +85,8 @@ struct HookDefParseReq regaddr_parse_req = {
 };
 
 
-void init_hook_def_regaddr() {
-    regaddr_parse_req.intf = &regaddr_handler_intf;
-    register_parse_handler(&regaddr_parse_req);
+void init_hook_def_regaddr(struct HookDefHandlerInterface* intf) {
+    struct HookDefParseReq* parse_req = copy_HookDefParseReq(&regaddr_parse_req);
+    parse_req->intf = intf;
+    register_parse_handler(parse_req);
 }
-

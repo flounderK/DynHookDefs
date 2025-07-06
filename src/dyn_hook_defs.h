@@ -24,16 +24,6 @@ struct HookDefParseReq {
     int nargs;
 };
 
-enum HookDefType {
-    HOOKDEF_NONE = 0,
-    HOOKDEF_ARGS,
-    HOOKDEF_REGS,
-    HOOKDEF_REGADDR,
-    HOOKDEF_SYM,
-    HOOKDEF_ALLREGS,
-    HOOKDEF_DUMPADDR,
-};
-
 struct HookDef {
     struct list_head node;
     void* hook_data;  // pointer to struct like `struct HookDefArgs*`
@@ -55,4 +45,5 @@ extern struct list_head parse_req_list;
 void print_hook_defs();
 struct HookDef* new_HookDef(struct HookDefParseReq* parse_req);
 void destroy_HookDef(struct HookDef* hook_def);
+struct HookDefParseReq* copy_HookDefParseReq(struct HookDefParseReq* parse_req);
 #endif // DYN_HOOK_DEFS_H

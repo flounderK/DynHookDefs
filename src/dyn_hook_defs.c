@@ -98,3 +98,20 @@ void parse_hookdef_cmd(int argc, char** argv){
     }
 }
 
+struct HookDefParseReq* copy_HookDefParseReq(struct HookDefParseReq* parse_req) {
+    struct HookDefParseReq* new_parse_req = (struct HookDefParseReq*)malloc(sizeof(struct HookDefParseReq));
+    if (new_parse_req == NULL) {
+        printf("unable to alloc\n");
+        abort();
+    }
+    memset(new_parse_req, 0, sizeof(struct HookDefParseReq));
+
+    new_parse_req->token = strdup(parse_req->token);
+    new_parse_req->arg_desc = strdup(parse_req->arg_desc);
+    new_parse_req->parse_func = parse_req->parse_func;
+    new_parse_req->print = parse_req->print;
+    new_parse_req->nargs = parse_req->nargs;
+    new_parse_req->intf = parse_req->intf;
+    return new_parse_req;
+}
+

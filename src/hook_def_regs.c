@@ -134,8 +134,8 @@ struct HookDefParseReq regs_parse_req = {
     .print = &print_regs
 };
 
-void init_hook_def_regs() {
-    regs_parse_req.intf = &regs_handler_intf;
-    register_parse_handler(&regs_parse_req);
+void init_hook_def_regs(struct HookDefHandlerInterface* intf) {
+    struct HookDefParseReq* parse_req = copy_HookDefParseReq(&regs_parse_req);
+    parse_req->intf = intf;
+    register_parse_handler(parse_req);
 }
-

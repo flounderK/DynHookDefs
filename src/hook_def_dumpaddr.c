@@ -78,9 +78,8 @@ struct HookDefParseReq dumpaddr_parse_req = {
 };   // <addr|sym>,<addr>,<size>
 
 
-void init_hook_def_dumpaddr() {
-    dumpaddr_parse_req.intf = &dumpaddr_handler_intf;
-    register_parse_handler(&dumpaddr_parse_req);
+void init_hook_def_dumpaddr(struct HookDefHandlerInterface* intf) {
+    struct HookDefParseReq* parse_req = copy_HookDefParseReq(&dumpaddr_parse_req);
+    parse_req->intf = intf;
+    register_parse_handler(parse_req);
 }
-
-

@@ -82,9 +82,9 @@ struct HookDefParseReq args_parse_req = {   // <addr|sym>,<num-regs>
     .print = &print_args
 };
 
-
-void init_hook_def_args() {
-    args_parse_req.intf = &args_handler_intf;
-    register_parse_handler(&args_parse_req);
+void init_hook_def_args(struct HookDefHandlerInterface* intf) {
+    struct HookDefParseReq* parse_req = copy_HookDefParseReq(&args_parse_req);
+    parse_req->intf = intf;
+    register_parse_handler(parse_req);
 }
 

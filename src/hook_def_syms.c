@@ -47,10 +47,10 @@ struct HookDefParseReq sym_parse_req = {
     .nargs = 2,
     .parse_func = &parse_hookdef_sym,
     .arg_desc = "<name>,<addr>",
-    .intf = &sym_handler_intf
 };
 
-void init_hook_def_sym() {
-    register_parse_handler(&sym_parse_req);
+void init_hook_def_sym(struct HookDefHandlerInterface* intf) {
+    struct HookDefParseReq* parse_req = copy_HookDefParseReq(&sym_parse_req);
+    parse_req->intf = intf;
+    register_parse_handler(parse_req);
 }
-

@@ -1,6 +1,7 @@
 #ifndef HOOK_DEF_REGADDR_H
 #define HOOK_DEF_REGADDR_H
 #include <stdint.h>
+#include "dyn_hook_defs.h"
 
 struct HookDefRegAddr {
     uint64_t addr;
@@ -9,5 +10,5 @@ struct HookDefRegAddr {
 };
 
 
-void init_hook_def_regaddr();
+void init_hook_def_regaddr(struct HookDefHandlerInterface*);
 #endif // HOOK_DEF_REGADDR_H
