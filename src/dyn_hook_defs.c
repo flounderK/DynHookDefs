@@ -23,6 +23,15 @@ void print_hook_defs() {
     }
 }
 
+void print_parse_reqs() {
+    struct HookDefParseReq* parsereq = NULL;
+    struct list_head* curr_node = NULL;
+    list_for_each(curr_node, &parse_req_list) {
+        parsereq = list_entry(curr_node, struct HookDefParseReq, node);
+        printf("%s: %s\n", parsereq->token, parsereq->arg_desc);
+    }
+}
+
 struct HookDef* new_HookDef(struct HookDefParseReq* parse_req){
     if (parse_req == NULL) {
         printf("%s hook def intf is null\n", __func__);

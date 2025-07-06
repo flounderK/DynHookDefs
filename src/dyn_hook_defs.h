@@ -46,4 +46,5 @@ void print_hook_defs();
 struct HookDef* new_HookDef(struct HookDefParseReq* parse_req);
 void destroy_HookDef(struct HookDef* hook_def);
 struct HookDefParseReq* copy_HookDefParseReq(struct HookDefParseReq* parse_req);
+void print_parse_reqs();
 #endif // DYN_HOOK_DEFS_H

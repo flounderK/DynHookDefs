@@ -22,10 +22,15 @@ int main(int argc, char* argv[]) {
     init_hook_def_regaddr(&intf_regaddr);
     init_hook_def_regs(&intf_regs);
     init_hook_def_dumpaddr(&intf_dumpaddr);
+    printf("parse reqs\n");
+    print_parse_reqs();
+    printf("\n");
     parse_hookdef_cmd(argc-1, &argv[1]);
     printf("syms:\n");
     print_syms();
+    printf("\n");
     printf("hook defs:\n");
     print_hook_defs();
+    printf("\n");
     return 0;
 }
