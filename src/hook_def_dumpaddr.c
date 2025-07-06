@@ -73,7 +73,7 @@ struct HookDefHandlerInterface dumpaddr_handler_intf;
 struct HookDefParseReq dumpaddr_parse_req = {
     .token = "dumpaddr", .nargs = 3,
     .parse_func = &parse_hookdef_dumpaddr,
-    .arg_desc = "<addr|sym>,<addr>,<size>",
+    .arg_desc = "<addr|sym> <addr> <size>",
     .print = &print_dumpaddr
 };   // <addr|sym>,<addr>,<size>
 

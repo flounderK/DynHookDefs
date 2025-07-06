@@ -78,7 +78,7 @@ struct HookDefParseReq args_parse_req = {   // <addr|sym>,<num-regs>
     .token = "args",
     .nargs = 2,
     .parse_func = &parse_hookdef_args,
-    .arg_desc = "<addr|sym>,<num-regs>",
+    .arg_desc = "<addr|sym> <num-regs>",
     .print = &print_args
 };
 

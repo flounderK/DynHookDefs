@@ -46,7 +46,7 @@ struct HookDefParseReq sym_parse_req = {
     .token = "sym",
     .nargs = 2,
     .parse_func = &parse_hookdef_sym,
-    .arg_desc = "<name>,<addr>",
+    .arg_desc = "<name> <addr>",
 };
 
 void init_hook_def_sym(struct HookDefHandlerInterface* intf) {

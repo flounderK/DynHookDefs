@@ -130,7 +130,7 @@ struct HookDefHandlerInterface regs_handler_intf;
 struct HookDefParseReq regs_parse_req = {
     .token = "regs", .nargs = 2,
     .parse_func = &parse_hookdef_regs,
-    .arg_desc = "<addr|sym>,<reglist>",
+    .arg_desc = "<addr|sym> <comma-separated-reglist>",
     .print = &print_regs
 };
 

@@ -80,7 +80,7 @@ struct HookDefParseReq regaddr_parse_req = {
     .token = "regaddr",
     .nargs = 3,
     .parse_func = &parse_hookdef_regaddr,
-    .arg_desc = "<addr|sym>,<reg>,<size>",
+    .arg_desc = "<addr|sym> <reg> <size>",
     .print = &print_regaddr
 };
 
