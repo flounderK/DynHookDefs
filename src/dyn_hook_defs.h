@@ -32,11 +32,6 @@ struct HookDef {
     struct HookDefParseReq* parse_req;
 };
 
-struct HookDefAllRegs {
-    uint64_t addr;
-};
-
-
 int register_parse_handler(struct HookDefParseReq* new_handler_int);
 void parse_hookdef_cmd(int argc, char* argv[]);
 

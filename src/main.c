@@ -9,12 +9,14 @@
 #include "parse_utils.h"
 #include "hook_def_syms.h"
 #include "hook_def_dumpaddr.h"
+#include "hook_def_allregs.h"
 
 struct HookDefHandlerInterface intf_sym;
 struct HookDefHandlerInterface intf_args;
 struct HookDefHandlerInterface intf_regaddr;
 struct HookDefHandlerInterface intf_regs;
 struct HookDefHandlerInterface intf_dumpaddr;
+struct HookDefHandlerInterface intf_allregs;
 
 int main(int argc, char* argv[]) {
     init_hook_def_sym(&intf_sym);
@@ -22,6 +24,7 @@ int main(int argc, char* argv[]) {
     init_hook_def_regaddr(&intf_regaddr);
     init_hook_def_regs(&intf_regs);
     init_hook_def_dumpaddr(&intf_dumpaddr);
+    init_hook_def_allregs(&intf_allregs);
     printf("parse reqs\n");
     print_parse_reqs();
     printf("\n");

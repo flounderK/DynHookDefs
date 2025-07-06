@@ -60,17 +60,6 @@ int register_parse_handler(struct HookDefParseReq* new_parse_req){
     return res;
 }
 
-void parse_hookdef_allregs(struct HookDefParseReq* parse_req, int argc, char** argv) {
-    printf("parse allregs\n");
-    return;
-}
-
-static struct HookDefParseReq parsereqs[] = {
-    { .token = "allregs", .nargs = 1,
-      .parse_func = &parse_hookdef_allregs,
-      .arg_desc = "<addr|sym>"},    // <addr|sym>
-};
-
 void parse_hookdef_cmd(int argc, char** argv){
     int currind = 0;
     struct HookDefParseReq* parsereq = NULL;
